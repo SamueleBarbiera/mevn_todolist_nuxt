@@ -1,35 +1,139 @@
 <template>
-  <svg
-    class="NuxtLogo"
-    width="245"
-    height="180"
-    viewBox="0 0 452 342"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M139 330l-1-2c-2-4-2-8-1-13H29L189 31l67 121 22-16-67-121c-1-2-9-14-22-14-6 0-15 2-22 15L5 303c-1 3-8 16-2 27 4 6 10 12 24 12h136c-14 0-21-6-24-12z"
-      fill="#00C58E"
-    />
-    <path
-      d="M447 304L317 70c-2-2-9-15-22-15-6 0-15 3-22 15l-17 28v54l39-67 129 230h-49a23 23 0 0 1-2 14l-1 1c-6 11-21 12-23 12h76c3 0 17-1 24-12 3-5 5-14-2-26z"
-      fill="#108775"
-    />
-    <path
-      d="M376 330v-1l1-2c1-4 2-8 1-12l-4-12-102-178-15-27h-1l-15 27-102 178-4 12a24 24 0 0 0 2 15c4 6 10 12 24 12h190c3 0 18-1 25-12zM256 152l93 163H163l93-163z"
-      fill="#2F495E"
-    />
-  </svg>
+    <!--eslint-disable-->
+    <div class="container-fluid row-12 backpage">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous" />
+        <div class="container-fluid back col-4">
+            <form method="post" @submit.prevent="postData">
+                <div class="col-12">
+                    <div>
+                        <input v-model="oggetto" type="text" class="form-control input-lg" name="oggetto" placeholder="oggetto" />
+                    </div>
+                    <br />
+                    <div>
+                        <input v-model="data" type="text" class="form-control input-lg" name="data" placeholder="data" />
+                    </div>
+                    <br />
+                    <div>
+                        <input type="submit" class="form-control input-lg link" placeholder="invio" />
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="container-fluid back col-4" style="overflow-x: auto">
+            <table v-for="post in posts" v-bind:key="post._id" class="table">
+                <tr>
+                    <td class="col-4" style="color: white">{{ post.oggetto }}</td>
+                    <td class="col-4" style="color: white">{{ post.data }}</td>
+                    <td class="col-2">
+                        <button v-on:click="deleteData(post._id)" class="form-control input-lg link submit">Delete</button>
+                    </td>
+                    <td class="col-2">
+                        <button v-on:click="editData(post._id)" class="form-control input-lg link submit">Edit</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
 </template>
 
+<script>
+/* eslint-disable */
+import Vue from 'vue'
+import axios from 'axios'
+Vue.prototype.$axios = window.axios
+export default {
+    name: 'Logo',
+    data() {
+        return {
+            posts: [],
+            data: '',
+            oggetto: '',
+        }
+    },
+    methods: {
+        postData() {
+            axios
+                .post('http://localhost:9000/api', {
+                    oggetto: this.oggetto,
+                    data: this.data,
+                })
+                .then((response) => {
+                    console.log(response)
+                    this.getData()
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+        },
+        deleteData(_id) {
+            axios
+                .delete('http://localhost:9000/api/' + _id)
+                .then(() => {
+                    this.getData()
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+        },
+        editData(_id) {
+            axios
+                .put('http://localhost:9000/api/' + _id, {
+                    oggetto: this.oggetto,
+                    data: this.data,
+                })
+                .then(() => {
+                    this.getData()
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+        },
+        getData() {
+            axios
+                .get('http://localhost:9000/api', {
+                    oggetto: this.oggetto,
+                    data: this.data,
+                })
+                .then((response) => {
+                    console.log((this.posts = response.data))
+                    return JSON.stringify((this.posts = response.data))
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+        },
+    },
+    mounted() {
+        this.getData()
+    },
+}
+</script>
+
 <style>
-.NuxtLogo {
-  animation: 1s appear;
-  margin: auto;
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+.back {
+    align-items: center;
+    justify-content: center;
+    min-height: 1vh;
+    max-width: 600px;
+    padding: 50px 30px;
+    background-image: linear-gradient(to bottom, #00bc7e, #106f87);
+    box-shadow: 0 0 30px rgba(49, 49, 51, 0.15);
+    border-radius: 10px;
 }
 
-@keyframes appear {
-  0% {
-    opacity: 0;
-  }
+.backpage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 1300px;
+    padding: 40px 30px;
+    background-image: linear-gradient(to bottom, #0d8a60, #10687e);
+    box-shadow: 0 0 30px rgba(0, 4, 255, 0.15);
+    border-radius: 5px;
 }
 </style>

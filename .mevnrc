@@ -1,11 +1,13 @@
 {
   "name": "mevn_todolist_nuxt",
   "template": "Nuxt.js",
-  "modules": [],
+  "modules": [
+    "axios"
+  ],
   "renderingMode": "universal",
   "deployTarget": "server",
   "isConfigured": {
-    "client": false,
-    "server": false
+    "client": true,
+    "server": true
   }
 }
